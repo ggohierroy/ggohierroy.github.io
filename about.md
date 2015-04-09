@@ -4,8 +4,12 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+My name is Gabriel Gohier-Roy and I'm from Montreal.
 
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
+I was once an electrical engineer. In 2011, I was introduced to the world of .NET while working on industrial smart cameras and I haven't looked back since.
 
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
+These days I do web development using such things as Web API, Entity Framework, and Bootstrap among others.
+
+You can find my open source projects here: [github.com/ggohierroy](https://github.com/ggohierroy)
+
+You can view my LinkedIn profile right here: [ca.linkedin.com/pub/gabriel-gohier-roy/8/752/769](https://ca.linkedin.com/pub/gabriel-gohier-roy/8/752/769)
