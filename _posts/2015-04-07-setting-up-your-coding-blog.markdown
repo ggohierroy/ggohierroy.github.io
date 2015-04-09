@@ -34,14 +34,14 @@ If you try to run this command now: `bundle exec jekyll build`, you will most pr
 
 I made the mistake of installing Python 3, and later found out that Pygment (the syntax highlighter) does not support Python 3. So go ahead and install [Python 2][python-install].
 
-If, after the installation, you still get an error like I did, then it probably means that build process cannot find Python on your computer, so you'll want to add the path to your python installation to the [`PATH` environment variable](http://stackoverflow.com/questions/9546324/adding-directory-to-path-environment-variable-in-windows).
+If, after the installation, you still get an error like I did, then it probably means that the build process cannot find Python on your computer, so you'll want to add the path to your python installation to the [`PATH` environment variable](http://stackoverflow.com/questions/9546324/adding-directory-to-path-environment-variable-in-windows).
 
 After all this, the build should now correctly work and the result will be in the `_site` folder.
 
 Go ahead and run the `bundle exec jekyll serve` command and navigate to `http://localhost:4000/` to see your newly created blog!
 
 # What now?
-Now you can navigate the samples that were created in your respository and push the to Github to publish your changes. If you are looking for inspiration, you can also view the source of this blog [here][github-page].
+Now you can navigate the samples that were created in your respository and push to Github to publish your changes. If you are looking for inspiration, you can also view the source of this blog [here][github-page].
 
 [previous-blog]: http://stevezissouprogramming.blogspot.ca/
 [gist]: https://gist.github.com/
