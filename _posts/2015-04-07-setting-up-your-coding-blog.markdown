@@ -4,7 +4,7 @@ title:  "Setting Up Your Coding Blog with Jekyll - Windows Edition"
 date:   2015-04-07 21:33:18
 categories: jekyll
 ---
-I've been thinking about getting back into blogging lately. I've [blogged in the past][previous-blog], but I can't really remember what it was about (I think it was something about OpenGL and iOS). Now I'm doing a lot of C#, and a lot of front-end development, and I have evolved quite a bit since my iOS experiments, so I'm going to talk about all this here. So, my first post is about setting up [Jekyll][jekyll] on Windows in order to start your own coding blog!
+I've been thinking about getting back into blogging lately. I've [blogged in the past][previous-blog], but I can't really remember what it was about (I think it was something about OpenGL and iOS). Now I'm doing a lot of C#, and a lot of front-end development, and I have evolved quite a bit since my iOS experiments, so I'm going to talk about all this here. Here is my first post is about setting up [Jekyll][jekyll] on Windows in order to start your own coding blog!
 
 There are a ton of good blogging platforms out there. I used to be on [Blogger][blogger], and I had a pretty fun time with it, but it took me forever to create [Gists][gist] and copy-paste them in my posts. So, there I went looking for a blogging platform specifically for programmers, and this is where I found Jekyll. It supports markdown, code snippets, and the best part is that you can host Jekyll blogs directly on [Github][github] (which is where this blog is hosted). I've been using it for about a day, and I've had an amazing experience so far so let's start!
 
