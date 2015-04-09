@@ -12,4 +12,4 @@ These days I do web development using such things as Web API, Entity Framework, 
 
 You can find my open source projects here: [github.com/ggohierroy](https://github.com/ggohierroy)
 
-You can view my LinkedIn profile right here: [ca.linkedin.com/pub/gabriel-gohier-roy/8/752/769](https://ca.linkedin.com/pub/gabriel-gohier-roy/8/752/769)
+You can view my LinkedIn profile right here: [linkedin.com/gabriel-gohier-roy](https://ca.linkedin.com/pub/gabriel-gohier-roy/8/752/769)
