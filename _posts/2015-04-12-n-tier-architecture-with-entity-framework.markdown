@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "N-Tier architecture with Web API and Entity Framework"
+date:   2015-04-12 16:45:00
 categories: entity-framework
 ---
 Web API and Entity Framework are two wonderful tools that allow you to create back-ends for your websites very quickly and effortlessly. Using a model and the Entity Framework context, it is possible to automatically generate controllers with all the CRUDs. Unfortunately, this model has its limits when you need to add any sort of complex business logic that might depend on other entities for example. It quickly becomes apparent that in order to efficiently reuse code, you will need to add a business layer to your application. In this post, I will demonstrate the solution I came up with to integrate this business layer into my application.
@@ -13,13 +14,13 @@ In a tiered application, you will usually find 3 tiers:
 
 In our case, **the data access tier will be Entity Framework**, and it totally makes sense since this tier is a way to abstract your database, which is exactly what Entity Framework already does.
 
-Many ideas found in this post were stolen from [this article][asp-net-article] on the offical ASP.NET website and it describes how to implement the Repository and Unit of Work patterns.
+Many ideas found in this post were stolen from [this article][asp-net-article] on the offical ASP.NET website which describes how to implement the Repository and Unit of Work patterns.
 
 ## The Context
 
 The first thing I do when I start an Entity Framework project is to **disable lazy loading**. Lazy loading saves a minimal amount of lines of code and can result in serious performance issues. The obvious example is the case in which you access a navigation property inside a loop. If you did not eagerly load this property, then there will be a trip to the database at every iteration. I prefer doing eager loading when at all possible.
 
-When I disable lazy loading, I usually also **disable proxy creation**. Proxy creation is necessary for lazy loading, and also makes sure that the context stays in sync when you modify an entity. When you turn it off, the changes will be synced when `DetectChanges` is called on the context. I haven't seen any evidence that one method or the other is better performance-wise, and since we will not be using lazy loading, then I choose to turn off proxy creation as well.
+When I disable lazy loading, I usually also **disable proxy creation**. Proxy creation is necessary for lazy loading, and also makes sure that the context automatically stays in sync when you modify an entity. When you turn it off, the changes will be synced when `DetectChanges` is called on the context. I haven't seen any evidence that one method or the other is better performance-wise, and since we will not be using lazy loading, then I choose to turn off proxy creation as well.
 
 This logic will usually be in the constructor of your context:
  
@@ -112,7 +113,7 @@ public class ClientController : ApiController
 }
 {% endhighlight %}
 
-Here is what the `UnitOfWork` class might look like. The main difference here is that instead of passing the context to the `Clients` object, I pass the `UnitOfWork` object (itself). This makes it easier to make calls to other business tier objects from within such objects.
+Here is what the `UnitOfWork` class might look like. The main difference from the article is that instead of passing the context to the `Clients` object, I pass the `UnitOfWork` object (itself). This makes it easier to make calls to other business tier objects from within such objects.
 
 {% highlight C# %}
 public class UnitOfWork : IDisposable
@@ -212,7 +213,7 @@ public class ClientController : ApiController
 
 ## The Business Logic Tier
 
-Here I'm going to simply show you the generic base class for each business object and then explain how it all works.
+Here I'm going to simply show you the business object generic base class and then explain how it all works.
 
 {% highlight C# %}
 public class BusinessObjectBase<TEntity, TSearchCriteria>
@@ -339,7 +340,7 @@ public class BusinessObjectBase<TEntity, TSearchCriteria>
     where TSearchCriteria : class
 {% endhighlight %}
 
-Four types need to be specified when deriving from the `BusinessOjbectBase`:
+Two types need to be specified when deriving from the `BusinessOjbectBase`:
 
 1. `TEntity`: The main entity type, i.e., the model.
 2. `TSearchCriteria`: The object which contains the criteria used to filter during a search.
@@ -357,7 +358,7 @@ This is fairly straightforward. As previously mentioned, the constructor takes a
 
 ### The Create Operation
 
-This is a method that can be called if you need to initialize an entity from the bakc-end. You will be able to specify default values in the entity's constructor, or you can override each method if a more complex initialization is required, for instance if you need to make database calls.
+This is a method that can be called if you need to initialize an entity server-side. You will be able to specify default values in the entity's constructor, or you can override the method if a more complex initialization is required, for instance if you need to make database calls.
 
 {% highlight C# %}
 public virtual TEntity Create()
@@ -410,9 +411,9 @@ public virtual Expression<Func<TEntity, TEntity>> ToSearchDto { get { return e =
 
 Both methods can have search criteria specified in order to filter the results. This will be done with the use of the `Filter` virtual method, which simply returns the whole set by default. You will need to override it to do any sort of real filtering.
 
-The first method, which returns a set of entities can be called from the back-end, the query can be done with `AsNoTracking()` specified, which can be useful at times. Tou can also specify lambda expressions which will be used to `Include()` related entities.
+The first method, which returns a set of entities, can be called from the back-end. The query can be done with `AsNoTracking()` specified, which can be useful at times. You can also specify lambda expressions which will be used to `Include()` related entities.
 
-The second method will be called by the controller, and returns a set of DTOs. The `ToSearchDTO` expression needs to be overriden for the results to be mapped to the DTO object.
+The second method is specifically for the controller to call, and returns a set of DTOs. The `ToSearchDTO` expression needs to be overriden to map the DTO specific properties.
 
 ### The Read Operation
 
@@ -443,7 +444,7 @@ public virtual TEntity ReadDto(int id)
 public virtual Expression<Func<TEntity, TEntity>> ToDto { get { return e => e; } }
 {% endhighlight %}
 
-The read methods are really similar to the search to there is nothing interesting to add.
+This is very similar to the search methods.
 
 ### The Insert Operation
 
@@ -461,7 +462,7 @@ public virtual void Insert(TEntity toInsert)
 }
 {% endhighlight %}
 
-This simply adds the object to the set, and also sets default insertion values.
+This simply adds the object to the set.
 
 ### The Update Operation
 
@@ -479,7 +480,7 @@ public virtual void Update(TEntity toUpdate)
 }
 {% endhighlight %}
 
-Similarly to the insert method, this sets some default update values. It will also attach the object to the context if it isn't already. If the object was received by the controller, it will be unattached, and we need to manually attach it like this. If the object was read in the back-end, it will already be attached and tracked by the context.
+This method needs to attach the object to the context if it isn't already. If the object was received by the controller, it will be detached, and we need to manually attach it like this. If the object was read in the back-end for instance, it will already be attached and tracked by the context, so nothing needs to be done.
 
 ### The Delete Operation
 
@@ -498,8 +499,9 @@ public virtual void Delete(TEntity toDelete)
 }
 {% endhighlight %}
 
-Again, we set some default values for soft deletion, and then attach the object to the context if it isn't already.
+Here, we also need to attach the object if necessary.
 
+### Business Object Sample
 
 {% highlight C# %}
 public class Clients : BusinessObjectBase<Client, ClientFindCriteria>
@@ -538,7 +540,7 @@ public class Clients : BusinessObjectBase<Client, ClientFindCriteria>
 }
 {% endhighlight %}
 
-With this amount of code, you can now read, insert, update, and delete clients, which is pretty amazing.
+You can see that with very little code, you can now read, insert, update, and delete clients.
 
 ## Conclusion
 
